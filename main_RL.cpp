@@ -19,19 +19,10 @@
 #include <sstream>
 #include <random>
 #include <chrono>
-//#include <Python.h>
-//#include "MatlabEngine.hpp"
-//#include "MatlabDataArray.hpp"
 
 using namespace std;
 
 
-// Pass vector containing MATLAB data array scalar
-/*using namespace matlab::engine;
-// Start MATLAB engine synchronously
-std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB();
-// Create MATLAB data array factory
-matlab::data::ArrayFactory factory;*/
 
 float *H,*H2,*x,*x_hat,*y,P,*LR,*pLR,*E_c_v,*E_v_c,*E_c_v_mu,*E_v_c_mu,*H_D,*y_D,*LR_D,*res_c_v,*res_c_v_srtd,err,err2,err3,biterr,biterr2,biterr3,varn,ncv,ncv2,ncv3,*ncv_vec,*ncv_vec2,*ncv_vec3,*Q,*Q_temp,**Q2,**Q2_inv,
 **rw_vec,**rw_vec_srtd,*d_vec,*b_vec,**tran_prob,**G,*GI2,*Gmax,*divv,qstrt,gap,*Q_cnt,*zeta,*Gtemp,*rep,*diff,**R_sv,*param_vec,*val_vec,*ncx2_vec;
@@ -109,28 +100,6 @@ int main() {
 		row_wt=7; //max. row. wt.
 		dv=3; dc=7;
 	} //(3,7) AB
-
-	if(fn==7|| fn==8) {
-		if(matnum==1) inf.open("matrices/mat_BCH_63_51.txt"); 
-		m=12; n=63;
-		cls_sz=6; M=8;
-		col_wt=8; //max. col. wt.
-		row_wt=28; //max. row. wt.
-		dv=col_wt; dc=row_wt;
-	} //(63,51) BCH
-
-	if(fn==9|| fn==10) {
-
-		if(matnum==1) inf.open("matrices/mackay_96_48.txt");
-		else if(matnum==2) inf.open("matrices/mackay_96_48_2.txt");
-		else if(matnum==3) inf.open("matrices/mackay_96_48_3.txt"); 
-		//inf.open("mat.txt"); matnum=1;
-		m=48; n=96;
-		cls_sz=6; M=4;
-		col_wt=3; //max. col. wt.
-		row_wt=6; //max. row. wt.
-		dv=col_wt; dc=row_wt;
-	} //(96,48) Mackay LDPC
 
 
 
@@ -294,25 +263,6 @@ int main() {
 	
 	if(fn==4 || fn==5 || fn==6) {rep[0]=-9.805; rep[1]=-0.189; rep[2]=1.77; rep[3]=13.36;}  
 
-	//BCH
-	if(fn==7) inf9.open("clusters/cls_ind_mat_ran_BCH_63_51.txt");
-	else if(fn==8) inf9.open("clusters/cls_ind_mat_opt_BCH_63_51.txt");
-	if(fn==7 || fn==8) {
-		if(M==4) {rep[0]=74.61; rep[1]=104.6; rep[2]=119.58; rep[3]=131.56;}
-		else {rep[0]=20.8; rep[1]=44.2; rep[2]=64; rep[3]=78.8; rep[4]=92.7; rep[5]=109; rep[6]=124; rep[7]=142;}
-	} 
-
-	//Mackay
-	if(fn==9) inf9.open("clusters/cls_ind_mat_ran_mac_96_48.txt");
-	else if(fn==10 && matnum==1) inf9.open("clusters/cls_ind_mat_opt_mac_96_48.txt");
-	else if(fn==10 && matnum==2) inf9.open("clusters/cls_ind_mat_opt_mac_96_48_2.txt");
-	else if(fn==10 && matnum==3) inf9.open("clusters/cls_ind_mat_opt_mac_96_48_3.txt");
-	if(fn==9 || fn==10) {
-		if(M==4) {rep[0]=-3.236; rep[1]=13.7; rep[2]=32.4; rep[3]=57.3;} 
-		//else{inf2.open("quantization/rep_mac.txt"); for(i=0;i<M;i++) inf2>>rep[i];}
-		else{rep[0]=-3.236; rep[1]=9.65; rep[2]=22.2; rep[3]=34.4; rep[4]=46.8; rep[5]=61; rep[6]=76.3; rep[7]=96.8;}
-	}  
-	
 	cout<<'\n'<<"rep: "; for(j=0;j<M;j++) cout<<rep[j]<<" "; cout<<'\n';
 
 	for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf9 >> cls_ind_mat[i][j];
@@ -380,36 +330,7 @@ cw_cnt=0;
 			//outf.open(filename.c_str()); for(i=0;i<S*num_cls;i++) for(j=0;j<cls_sz;j++) outf<<Q[i*cls_sz+j]<<" ";  outf<<std::endl; outf.close();
 		//}
 	}
-	
-	//create training dataset
-	if(DeepRL) { 
-		outf4.open("DeepRL/batch_sz.txt"); 
-		for(i=0;i<num_cls;i++) {
-			filename="DeepRL/syn_cls_"+func(i)+".txt"; 
-			outf3.open(filename.c_str()); 
-			filename="DeepRL/syn_cls_new_"+func(i)+".txt"; 
-			outf5.open(filename.c_str()); 
-			filename="DeepRL/R_"+func(i)+".txt"; 
-			outf6.open(filename.c_str()); 
-			filename="DeepRL/a_"+func(i)+".txt"; 
-			outf7.open(filename.c_str()); 
-			for(k=0;k<batch_sz[i];k++) {
-				for(j=0;j<cls_sz;j++) {
-					outf3<<syn_sv[i][k][j]<<" ";  
-					outf5<<syn_sv2[i][k][j]<<" ";  
-				}
-				outf6<<R_sv[i][k]<<" "; 
-				outf7<<a_sv[i][k]<<" "; 
-			}
-			outf3<<std::endl; outf3.close();
-			outf5<<std::endl; outf5.close();
-			outf6<<std::endl; outf6.close();
-			outf7<<std::endl; outf7.close();
-			
-			outf4<<batch_sz[i]<<" ";  
-		}
-		outf4<<std::endl; outf4.close();
-	}
+
 //}
 
 
