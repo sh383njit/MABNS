@@ -51,16 +51,12 @@ int BP(int cnt2) {
 			if(meth==1) MP0(cnt); //flooding
 			else if(meth==2) MP1(cnt,l); //GI scheduling
 			//else if(meth==2) MP1b(cnt,l); //random scheduling
-			
 			else if(meth==3) MP2(cnt,l); //NS
+			else if(meth==4) MP3(cnt,l); //contiguous model-free
+			else if(meth==5) MP3(cnt,l); //random model-free
+			else if(meth==6) MP3(cnt,l); //optimized model-free 
+			else if(meth==7) MP5c(cnt,cnt1,l); //NSTS
 
-			else if(meth==4) MP3(cnt,l); //random model-free
-			else if(meth==5) MP3(cnt,l); //optimized model-free
-			else if(meth==6) MP3(cnt,l); //random model-based for JSAIT, contiguous model-free for NIPS
-			else if(meth==7) MP3(cnt,l); //optimized model-based
-			else if(meth==8) MP5c(cnt,cnt1,l); //NSTS
-
-			//else if(meth==7) MP4(cnt,l,pFunc); //Deep RL based
 			
 			//checking syndromes	
 			for(cw=0;cw<CW;cw++) {

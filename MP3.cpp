@@ -70,12 +70,10 @@ void MP3(long cnt, long l) {
 					//syn_cls[i-cls_idx*cls_sz]=syn[i]; 
 
 				for(i=0;i<cls_sz;i++) 
-					if(meth==4) syn_cls[i]=syn[cls_ind_mat_ran[cls_idx][i]];
-					else if(meth==5) syn_cls[i]=syn[cls_ind_mat_opt[cls_idx][i]]; 
-					//else if(meth==6) syn_cls[i]=syn[cls_ind_mat_contg[cls_idx][i]]; 
-					else if(meth==6) syn_cls[i]=syn[cls_ind_mat_ran[cls_idx][i]]; 
-					else if(meth==7) syn_cls[i]=syn[cls_ind_mat_opt[cls_idx][i]];
-					
+					if(meth==4) syn_cls[i]=syn[cls_ind_mat_contg[cls_idx][i]]; 
+					else if(meth==5) syn_cls[i]=syn[cls_ind_mat_ran[cls_idx][i]];
+					else if(meth==6) syn_cls[i]=syn[cls_ind_mat_opt[cls_idx][i]]; 
+
 
 
 				//cluster synd. to state value
@@ -90,18 +88,9 @@ void MP3(long cnt, long l) {
 
 				row=cls_idx*S+s; 
 				for(i=0;i<cls_sz;i++) 
-					/*if(meth==4) Q_temp[i]=Q[row*cls_sz+i];
+					if(meth==4) Q_temp[i]=Q[row*cls_sz+i];
 					else if(meth==5) Q_temp[i]=Q2[row*cls_sz+i];
-					else if(meth==6) Q_temp[i]=Q3[row*cls_sz+i];*/
-					
-					//if(!DeepRL) {
-						if(meth==4) Q_temp[i]=Q2[row*cls_sz+i]; 
-						else if(meth==5) Q_temp[i]=Q3[row*cls_sz+i]; 
-						//else if(meth==6) Q_temp[i]=Q[row*cls_sz+i]; 				
-						else if(meth==6) Q_temp[i]=Q5[row*cls_sz+i]; 
-						else if(meth==7) Q_temp[i]=Q6[row*cls_sz+i]; 
-					//}
-					
+					else if(meth==6) Q_temp[i]=Q3[row*cls_sz+i];
 
 				//cout<<'\n'<<"s: "<<s<<" row: "; cout<<row;
 				//cout<<'\n'<<"Q_temp: "; for(i=0;i<cls_sz;i++) cout<<Q_temp[i]<<" "<<endl;

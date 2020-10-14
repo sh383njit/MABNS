@@ -1,8 +1,4 @@
 
-//for BC decoding L=W=3
-//$ sudo apt-get install python3-dev (if dev not installed)
-//$ g++ -o main2 main_BP.cpp -I/usr/include/python3.7 -L/usr/lib/python3.7/config-3.7m-x86_64-linux-gnu -lpython3.7
-//g++ -o main2 -std=c++11 -I /home/salman/extern/include/ -L /home/salman/extern/bin/glnxa64/ -pthread main_BP.cpp -lMatlabDataArray -lMatlabEngine
 
 #include <iostream>
 #include <cstdio>
@@ -15,18 +11,9 @@
 #include <sstream>
 #include <random>
 #include <chrono>
-//#include <fdeep/fdeep.hpp>
-//#include "MatlabEngine.hpp"
-//#include "MatlabDataArray.hpp"
 
 using namespace std;
 
-// Pass vector containing MATLAB data array scalar
-/*using namespace matlab::engine;
-// Start MATLAB engine synchronously
-std::unique_ptr<MATLABEngine> matlabPtr = startMATLAB();
-// Create MATLAB data array factory
-matlab::data::ArrayFactory factory;*/
 
 
 float *H,*H2,*x,*x_hat,*y,P,*LR,*pLR,*E_c_v,*E_c_v_old,*E_v_c,*E_c_v_mu,*E_v_c_mu,*H_D,*y_D,*LR_D,*res_c_v,*res_c_v_srtd,err,err2,err3,err4,err5,err6,err7,err8,biterr,biterr2,biterr3,biterr4,biterr5,biterr6,biterr7,biterr8,
@@ -92,17 +79,14 @@ int main() {
 	if(fn==1) {
 		inf.open("matrices/mat_n196_1.txt"); matnum=1; 
 		inf12.open("Qtables/Q1_1c.txt"); inf14.open("Qtables/Q2_1c.txt"); inf15.open("Qtables/Q3_1c.txt"); //model-free matrix 1
-		inf16.open("QMtables/Q1_1_M.txt"); inf17.open("QMtables/Q2_1_M.txt"); inf18.open("QMtables/Q3_1_M.txt"); //model-based matrix 1
 	}
 	else if(fn==2) {
 		inf.open("matrices/mat_n196_2.txt"); matnum=2; 
 		inf12.open("Qtables/Q1_2c.txt"); inf14.open("Qtables/Q2_2c.txt"); inf15.open("Qtables/Q3_2c.txt"); //model-free matrix 2
-		inf16.open("QMtables/Q1_2_M.txt"); inf17.open("QMtables/Q2_2_M.txt"); inf18.open("QMtables/Q3_2_M.txt"); //model-based matrix 2
 	}
 	else if(fn==3) {
 		inf.open("matrices/mat_n196_3.txt"); matnum=3; 
 		inf12.open("Qtables/Q1_3c.txt"); inf14.open("Qtables/Q2_3c.txt"); inf15.open("Qtables/Q3_3c.txt"); //model-free matrix 3
-		inf16.open("QMtables/Q1_3_M.txt"); inf17.open("QMtables/Q2_3_M.txt"); inf18.open("QMtables/Q3_3_M.txt"); //model-based matrix 3
 	}
 
 	//********************************************************** AB *****************************************************************
@@ -115,52 +99,16 @@ int main() {
 	if(fn==4) {
 		inf.open("matrices/mat_n196_AB_1.txt"); matnum=1; 
 		inf12.open("Qtables/Q4_1c.txt"); inf14.open("Qtables/Q5_1c.txt"); inf15.open("Qtables/Q6_1c.txt"); //model-free matrix 1
-		inf16.open("QMtables/Q4_1_M.txt"); inf17.open("QMtables/Q5_1_M.txt"); inf18.open("QMtables/Q6_1_M.txt"); //model-based matrix 1
 	}
 	else if(fn==5) {
 		inf.open("matrices/mat_n196_AB_2.txt"); matnum=2; 
 		inf12.open("Qtables/Q4_2c.txt"); inf14.open("Qtables/Q5_2c.txt"); inf15.open("Qtables/Q6_2c.txt"); //model-free matrix 2
-		inf16.open("QMtables/Q4_2_M.txt"); inf17.open("QMtables/Q5_2_M.txt"); inf18.open("QMtables/Q6_2_M.txt"); //model-based matrix 2
 	}	
 	else if(fn==6) {
 		inf.open("matrices/mat_n196_AB_3.txt"); matnum=3; 
 		inf12.open("Qtables/Q4_3c.txt"); inf14.open("Qtables/Q5_3c.txt"); inf15.open("Qtables/Q6_3c.txt"); //model-free matrix 3 
-		inf16.open("QMtables/Q4_3_M.txt"); inf17.open("QMtables/Q5_3_M.txt"); inf18.open("QMtables/Q6_3_M.txt"); //model-based matrix 3
 	}
 
-	//Mackay
-	if(fn==7 || fn==8 || fn==9) {
-		m=48; n=96; AB=0; mac=1; bch=0; col_wt=3; row_wt=6; cls_sz=6; M=4;
-		rep= new float[M];
-		if(M==8) {rep[0]=-3.236; rep[1]=9.65; rep[2]=22.2; rep[3]=34.4; rep[4]=46.8; rep[5]=61; rep[6]=76.3; rep[7]=96.8;}
-		else {rep[0]=-3.236; rep[1]=13.7; rep[2]=32.4; rep[3]=57.3;}
-	}
-	
-	if(fn==7) {
-		inf.open("matrices/mackay_96_48.txt"); matnum=1; 
-		inf14.open("Qtables/Q9_1.txt"); inf15.open("Qtables/Q10_1.txt"); //model-free opt-clus
-		inf17.open("QMtables/Q9_1_M.txt"); inf18.open("QMtables/Q10_1_M.txt"); //model-based
-	}
-	else if(fn==8) {
-		inf.open("matrices/mackay_96_48_2.txt"); matnum=2; 
-		inf14.open("Qtables/Q9_2.txt"); inf15.open("Qtables/Q10_2.txt"); //model-free opt-clus
-		inf17.open("QMtables/Q9_2_M.txt"); inf18.open("QMtables/Q10_2_M.txt"); //model-based
-	}
-	else if(fn==9) {
-		inf.open("matrices/mackay_96_48_3.txt"); matnum=3; 
-		inf14.open("Qtables/Q9_3.txt"); inf15.open("Qtables/Q10_3.txt"); //model-free opt-clus
-		inf17.open("QMtables/Q9_3_M.txt"); inf18.open("QMtables/Q10_3_M.txt"); //model-based
-	}
-	
-	//BCH
-	if(fn==10) {
-		m=12; n=63; AB=0; mac=0; bch=1; col_wt=8; row_wt=28; cls_sz=6; M=8;
-		rep= new float[M];
-		if(M==4) {rep[0]=74.61; rep[1]=104.6; rep[2]=119.58; rep[3]=131.56;}
-		else {rep[0]=20.8; rep[1]=44.2; rep[2]=64; rep[3]=78.8; rep[4]=92.7; rep[5]=109; rep[6]=124; rep[7]=142;}
-		inf.open("matrices/mat_BCH_63_51.txt"); matnum=1; 
-		inf14.open("Qtables/Q7_1.txt"); inf15.open("Qtables/Q8_1.txt"); //model-free opt-clus
-	}
 
 	if(test) {
 		m=4; 
@@ -266,23 +214,6 @@ int main() {
 		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf4 >> cls_ind_mat_opt[i][j];
 	}
 	
-	else if(mac) {		 
-		inf10.open("clusters/cls_ind_mat_ran_mac_96_48.txt");
-		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf10 >> cls_ind_mat_ran[i][j]; 
-		
-		if(matnum==1) inf4.open("clusters/cls_ind_mat_opt_mac_96_48.txt");
-		else if(matnum==2) inf4.open("clusters/cls_ind_mat_opt_mac_96_48_2.txt");
-		else if(matnum==3) inf4.open("clusters/cls_ind_mat_opt_mac_96_48_3.txt");
-		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf4 >> cls_ind_mat_opt[i][j];
-	}
-	
-	else if(bch) {		 
-		inf10.open("clusters/cls_ind_mat_ran_BCH_63_51.txt");
-		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf10 >> cls_ind_mat_ran[i][j]; 
-
-		inf4.open("clusters/cls_ind_mat_opt_BCH_63_51.txt");
-		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf4 >> cls_ind_mat_opt[i][j];
-	}
 	
 	cout<<'\n'<<"cls_ind_mat_ran: "<<'\n'; for(i=0;i<num_cls;i++) {for(j=0;j<cls_sz;j++) cout<<cls_ind_mat_ran[i][j]<<" "; cout<<'\n';}
 	//cout<<'\n'<<"cls_ind_mat_opt: "<<'\n'; for(i=0;i<num_cls;i++) {for(j=0;j<cls_sz;j++) cout<<cls_ind_mat_opt[i][j]<<" "; cout<<'\n';}
@@ -460,7 +391,7 @@ int main() {
 		ncv=ncv2=ncv3=ncv4=ncv5=ncv6=ncv7=ncv8=0;
 		dcw=dcw2=dcw3=dcw4=dcw5=dcw6=dcw7=dcw8=0;
 		err=err2=err3=err4=err5=err6=err7=err8=biterr=biterr2=biterr3=biterr4=biterr5=biterr6=biterr7=biterr8=l1=l2=l3=0;
-		while(/*(err<ev && i2<num_dat) || err2<ev ||*/ err3<ev || err4<ev || err5<ev /*|| err6<ev || err7<ev || err8<ev*/) { //take avg. of min. 3 blk. error events
+		while(/*(err<ev && i2<num_dat) || err2<ev ||*/ err3<ev || err4<ev || err5<ev ||  err6<ev /*||  err7<ev*/) { //take avg. of min. 3 blk. error events
 			for(cw=0;cw<CW;cw++) 
 				for(i=0;i<n2;i++) y[cw*n2+i]=1+dist(e2); //adding gaussian noise to all-zero CW
 			
@@ -469,9 +400,9 @@ int main() {
 
 			//cw=0; ofstream outf; outf.open("y.txt"); for(i=0;i<n2;i++) outf<<y[cw*n2+i]<<" "; outf<<std::endl; outf.close();
 
-			for(meth=1;meth<=8;meth++) {
+			for(meth=1;meth<=7;meth++) {
 				if(/*(meth==1 && err<ev && i2<num_dat) || (meth==2 && err2<ev) ||*/ (meth==3 && err3<ev) || (meth==4 && err4<ev)
-					|| (meth==5 && err5<ev) /*|| (meth==6 && err6<ev) || (meth==7 && err7<ev) || (meth==8 && err8<ev)*/) {	
+					|| (meth==5 && err5<ev) || (meth==6 && err6<ev) /*|| (meth==7 && err7<ev)*/) {	
 
 					num=BP(i2); 
 
