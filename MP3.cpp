@@ -12,7 +12,7 @@ void MP3(long cnt, long l) {
 		//cout<<'\n'<<"cw: "<<cw;
 		flg4=1;
 		for(k=0;k<cnt;k++) 
-			if(cw==excl_cw[k]) {flg4=0; break;} //if flg4=0, CN is excluded from scheduling
+			if(cw==excl_cw[k]) {flg4=0; break;} 
 
 		//cout<<'\n'<<'\n'<<"l: "<<l;
 		//cout<<'\n'<<"val:";
@@ -57,27 +57,9 @@ void MP3(long cnt, long l) {
 							if(val>rep[i] && val<=rep[i+1]) syn[j2]=i;							
 				}
 
-				/*for(i=0;i<M;i++) 
-					diff[i]=abs(val-rep[i]);
-				for(i=0;i<M;i++) indx3[i]=i; //refresh
-					for(i=0;i<M;i++) {
-					for(i2=i+1;i2<M;i2++) {
-						if(diff[i]>diff[i2]) {   
-							tmp=diff[i];
-							diff[i]=diff[i2];
-							diff[i2]=tmp;
-		
-							tmp2=indx3[i];
-							indx3[i]=indx3[i2];
-							indx3[i2]=tmp2;
-						}			
-					}
-				}
-				syn[j2]=indx3[0];*/ //pick the closest quantization representation point index
-
 			}
 
-			//cout<<'\n'<<"syn: "; for(i=0;i<m;i++) cout<<syn[i]<<" "<<endl;
+			//cout<<'\n'<<"syn: "; for(i=0;i<m;i++) cout<<syn[i]<<" ";
 
 			//ofstream outf; outf.open("syn.txt",fstream::app); for(i=0;i<m;i++) outf<<syn2[i]<<" "; outf<<std::endl; outf.close();
 		
@@ -90,14 +72,11 @@ void MP3(long cnt, long l) {
 				for(i=0;i<cls_sz;i++) 
 					if(meth==4) syn_cls[i]=syn[cls_ind_mat_ran[cls_idx][i]];
 					else if(meth==5) syn_cls[i]=syn[cls_ind_mat_opt[cls_idx][i]]; 
-					//else if(meth==6) syn_cls[i]=syn[cls_ind_mat_contg[cls_idx][i]]; //for NIPS
-					else if(meth==6) syn_cls[i]=syn[cls_ind_mat_ran[cls_idx][i]]; //for JSAIT
+					//else if(meth==6) syn_cls[i]=syn[cls_ind_mat_contg[cls_idx][i]]; 
+					else if(meth==6) syn_cls[i]=syn[cls_ind_mat_ran[cls_idx][i]]; 
 					else if(meth==7) syn_cls[i]=syn[cls_ind_mat_opt[cls_idx][i]];
 					
 
-				//cls_sz=cls_sz_vec[cls_idx];
-				//cout<<'\n'<<"syn_cls: "; for(i=0;i<cls_sz;i++) cout<<syn_cls[i]<<" ";
-				//cout<<'\n'<<"cls: "; for(i=0;i<cls_sz;i++) cout<<cls_ind_mat_opt[cls_idx][i]<<" ";
 
 				//cluster synd. to state value
 				s=0;
@@ -109,7 +88,6 @@ void MP3(long cnt, long l) {
 
 				S=pow(M,cls_sz);
 
-				//corresponding row of cluster in Q table
 				row=cls_idx*S+s; 
 				for(i=0;i<cls_sz;i++) 
 					/*if(meth==4) Q_temp[i]=Q[row*cls_sz+i];
@@ -117,29 +95,20 @@ void MP3(long cnt, long l) {
 					else if(meth==6) Q_temp[i]=Q3[row*cls_sz+i];*/
 					
 					//if(!DeepRL) {
-						if(meth==4) Q_temp[i]=Q2[row*cls_sz+i]; //random model-free
-						else if(meth==5) Q_temp[i]=Q3[row*cls_sz+i]; //optimized model-free
-						//else if(meth==6) Q_temp[i]=Q[row*cls_sz+i]; //contiguous model-free	//for NIPS					
-						else if(meth==6) Q_temp[i]=Q5[row*cls_sz+i]; //random model-based //for JSAIT
-						else if(meth==7) Q_temp[i]=Q6[row*cls_sz+i]; //optimized model-based
+						if(meth==4) Q_temp[i]=Q2[row*cls_sz+i]; 
+						else if(meth==5) Q_temp[i]=Q3[row*cls_sz+i]; 
+						//else if(meth==6) Q_temp[i]=Q[row*cls_sz+i]; 				
+						else if(meth==6) Q_temp[i]=Q5[row*cls_sz+i]; 
+						else if(meth==7) Q_temp[i]=Q6[row*cls_sz+i]; 
 					//}
 					
-					/*else 
-						if(meth==5) { //optimized model-free
-							inp.assign(syn_cls, syn_cls+cls_sz);
-							const auto model_0 = fdeep::load_model("DeepRL/fdeep_model.json");
-							const fdeep::tensor inp_tnsr(fdeep::tensor_shape(static_cast<std::size_t>(cls_sz)),inp); //converting vector to tensor
-							const auto result = model_0.predict({inp_tnsr});
-							const auto y=result[0];
-    						const std::vector<float> vec = y.to_vector();
-							Q_temp[i]=vec[i]; 
-						}*/
+
 				//cout<<'\n'<<"s: "<<s<<" row: "; cout<<row;
 				//cout<<'\n'<<"Q_temp: "; for(i=0;i<cls_sz;i++) cout<<Q_temp[i]<<" "<<endl;
 			
 				//sorting descending
-				for(i=0;i<cnt2;i++) indx[i]=i; //refresh
-				for(i=0;i<cnt2;i++) {  
+				for(i=0;i<cls_sz;i++) indx[i]=i; //refresh
+				for(i=0;i<cls_sz;i++) {  
 					for(i2=i+1;i2<cls_sz;i2++) {
 						if(Q_temp[i]<Q_temp[i2]) {   
 							tmp=Q_temp[i];
@@ -162,50 +131,7 @@ void MP3(long cnt, long l) {
 
 			//cout<<'\n'<<"Q_cls: "; for(i=0;i<num_cls;i++) cout<<Q_cls[i]<<" ";
 			//cout<<'\n'<<"indx_cls_CN: "; for(i=0;i<num_cls;i++) cout<<indx_cls_CN[i]<<" "<<endl;
-			
 
-			//finding which cluster to pick the CN from
-			/*if(!l) 
-				for(i=0;i<num_cls;i++) 
-					cls_s_prev[i]=-1;
-
-			//cout<<'\n'<<"cls_s_prev: "; for(i=0;i<num_cls;i++) cout<<cls_s_prev[i]<<" ";
-			//cout<<'\n'<<"cls_s_crnt: "; for(i=0;i<num_cls;i++) cout<<cls_s_crnt[i]<<" ";
-			
-			for(i=0;i<cnt2;i++) pick_cls[i]=-1; //refresh
-			cnt2=0;
-			for(i=0;i<num_cls;i++) 
-				if(cls_s_crnt[i]!=cls_s_prev[i]) { //check current vs prev. cluster states
-					pick_cls[cnt2]=i;
-					cnt2++;
-				}
-			//cout<<'\n'<<"pick_cls: "; for(i=0;i<cnt2;i++) cout<<pick_cls[i]<<" ";
-
-			for(i=0;i<num_cls;i++)
-				cls_s_prev[i]=cls_s_crnt[i];
-
-			//finding best CN of all valid clusters
-			for(i=0;i<num_cls;i++) indx_cls[i]=i; //refresh
-			for(i=0;i<cnt2;i++) {
-				for(i2=i+1;i2<cnt2;i2++) {
-					if(Q_cls[pick_cls[i]]<Q_cls[pick_cls[i2]]) {   
-						tmp=Q_cls[pick_cls[i]];
-						Q_cls[pick_cls[i]]=Q_cls[pick_cls[i2]];
-						Q_cls[pick_cls[i2]]=tmp;
-		
-						tmp2=indx_cls_CN[pick_cls[i]]; //best CN index of a cluster
-						indx_cls_CN[pick_cls[i]]=indx_cls_CN[pick_cls[i2]];
-						indx_cls_CN[pick_cls[i2]]=tmp2;
-
-						tmp2=indx_cls[pick_cls[i]]; //cluster index
-						indx_cls[pick_cls[i]]=indx_cls[pick_cls[i2]];
-						indx_cls[pick_cls[i2]]=tmp2;
-					}			
-				}
-			}*/
-			
-			
-			//finding best CN of all clusters
 			for(i=0;i<num_cls;i++) indx_cls[i]=i; //refresh
 			for(i=0;i<num_cls;i++) {
 				for(i2=i+1;i2<num_cls;i2++) {
@@ -224,16 +150,13 @@ void MP3(long cnt, long l) {
 					}			
 				}
 			}
-		
+			//***********************************************************************
+			
+			//cout<<'\n'<<"indx_cls: "; for(i=0;i<cnt2;i++) cout<<indx_cls[i]<<" ";
+			//cout<<'\n'<<"indx_cls_CN: "; for(i=0;i<cnt2;i++) cout<<indx_cls_CN[i]<<" ";
+			
+			j=indx_cls[0]*cls_sz+indx_cls_CN[0]; //with TS use 1st (3,6) matrix, 6th AB matrix, 1st Mackay matrix
 
-			if(meth==4) j=cls_ind_mat_ran[indx_cls[0]][indx_cls_CN[0]];
-			else if(meth==5) j=cls_ind_mat_opt[indx_cls[0]][indx_cls_CN[0]];
-			//else if(meth==6) j=cls_ind_mat_contg[indx_cls[0]][indx_cls_CN[0]]; //for NIPS 
-			else if(meth==6) j=cls_ind_mat_ran[indx_cls[0]][indx_cls_CN[0]]; //for JSAIT
-			else if(meth==7) j=cls_ind_mat_opt[indx_cls[0]][indx_cls_CN[0]];
-			
-			//cout<<'\n'<<"sh. CN RL: "<<j<<endl;
-			
 
 			for(i=0;i<row_wt;i++) { //row_wt is the no. of neighboring VNs of CN j
 				vidx=vns[j*row_wt+i]; //index of ith neighboring VN of CN j
