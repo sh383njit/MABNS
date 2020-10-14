@@ -39,7 +39,7 @@ long L=99; //coupling length (multiple of mem+1 and >=W)
 #define CW 1 //no. of codeword streams per transmission
 #define I 25 //no. of NS iters
 #define Ifl 25 //no. of flooding iters
-#define ev 1500 //min. no. of error events
+#define ev 500 //min. no. of error events
 #define avg 10
 
 string func(long n) {
@@ -62,7 +62,10 @@ int main() {
 	//cout<<'\n'<<"DeepRL ? "; cin>>DeepRL; //1 yes, 0 no
 	DeepRL=0;
 	float *blk_err,*blk_err2,*blk_err3,*blk_err4,*blk_err5,*blk_err6,*blk_err7,*blk_err8,*bit_err,*bit_err2,*bit_err3,*bit_err4,*bit_err5,*bit_err6,*bit_err7,*bit_err8,R;  
-	cout<<'\n'<<" file no: "; cin>>fn; ///////////////////////////////// 
+	cout<<'\n'<<" file no: "; cin>>fn; ///////////////////////////////// 	
+		
+	//indx3= new long[M];
+	//diff= new float[M];
 	 
 	BC=1;
 	//construct a random generator engine:
@@ -71,25 +74,16 @@ int main() {
 
 	ifstream inf,inf1,inf2,inf3,inf4,inf5,inf6,inf7,inf8,inf9,inf10,inf11,inf12,inf13,inf14,inf15,inf16,inf17,inf18; 
 
-	//inf1.open("mval.txt"); inf1>>m; 
-	//inf2.open("nval.txt"); inf2>>n;
-	//inf3.open("cls_sz.txt"); inf3>>cls_sz;
-	//inf6.open("qstrt.txt"); inf6>>qstrt;
-	//inf7.open("gap.txt"); inf7>>gap;
-	//inf8.open("M.txt"); inf8>>M;
-	
-	indx3= new long[M];
-	rep= new float[M];
-	diff= new float[M];
-
 	//m=500; n=1000; inf.open("mat_nonAB.txt"); dv=3; dc=6; 
 	//m=420; n=980; AB=1; inf.open("mat_AB.txt"); dv=3; dc=7; 
 
 	//****************************** the b (resp. c) version was trained with 5*10^7 (resp. 1.25*10^6) training examples
 
 	//********************************************************** non-AB *****************************************************************
+	
 	if(fn==1 || fn==2 || fn==3) {
 		m=98; n=196; AB=0; mac=0; bch=0; dv=3; dc=6; col_wt=3; row_wt=6; 
+		rep= new float[M];
 		if(!boxplus) {rep[0]=-8.081; rep[1]=-0.423; rep[2]=1.27; rep[3]=9.82;} 
 		else {rep[0]=-2.901; rep[1]=-0.376; rep[2]=0.317; rep[3]= 1.12336;} //for box-plus syndrome
 		cls_sz=7; M=4;
@@ -112,7 +106,11 @@ int main() {
 	}
 
 	//********************************************************** AB *****************************************************************
-	if(fn==4 || fn==5 || fn==6) {m=84; n=196; AB=1; mac=0; bch=0; dv=3; dc=7; col_wt=3; row_wt=7; rep[0]=-9.805; rep[1]=-0.189; rep[2]=1.77; rep[3]=13.36; cls_sz=7; M=4;}
+	if(fn==4 || fn==5 || fn==6) {
+		m=84; n=196; AB=1; mac=0; bch=0; dv=3; dc=7; col_wt=3; row_wt=7; cls_sz=7; M=4;
+		rep= new float[M];
+		rep[0]=-9.805; rep[1]=-0.189; rep[2]=1.77; rep[3]=13.36;
+	}
 
 	if(fn==4) {
 		inf.open("matrices/mat_n196_AB_1.txt"); matnum=1; 
@@ -133,6 +131,7 @@ int main() {
 	//Mackay
 	if(fn==7 || fn==8 || fn==9) {
 		m=48; n=96; AB=0; mac=1; bch=0; col_wt=3; row_wt=6; cls_sz=6; M=4;
+		rep= new float[M];
 		if(M==8) {rep[0]=-3.236; rep[1]=9.65; rep[2]=22.2; rep[3]=34.4; rep[4]=46.8; rep[5]=61; rep[6]=76.3; rep[7]=96.8;}
 		else {rep[0]=-3.236; rep[1]=13.7; rep[2]=32.4; rep[3]=57.3;}
 	}
@@ -155,15 +154,14 @@ int main() {
 	
 	//BCH
 	if(fn==10) {
-		m=12; n=63; AB=0; mac=0; bch=1; col_wt=8; row_wt=28; cls_sz=6; M=4;
+		m=12; n=63; AB=0; mac=0; bch=1; col_wt=8; row_wt=28; cls_sz=6; M=8;
+		rep= new float[M];
 		if(M==4) {rep[0]=74.61; rep[1]=104.6; rep[2]=119.58; rep[3]=131.56;}
 		else {rep[0]=20.8; rep[1]=44.2; rep[2]=64; rep[3]=78.8; rep[4]=92.7; rep[5]=109; rep[6]=124; rep[7]=142;}
 		inf.open("matrices/mat_BCH_63_51.txt"); matnum=1; 
 		inf14.open("Qtables/Q7_1.txt"); inf15.open("Qtables/Q8_1.txt"); //model-free opt-clus
-		inf17.open("QMtables/Q7_1_M.txt"); inf18.open("QMtables/Q8_1_M.txt"); //model-based
 	}
 
-	
 	if(test) {
 		m=4; 
 		n=5;
@@ -172,6 +170,7 @@ int main() {
 		mem=1;
 		gama=col_wt;
 	}
+
 	
 	S=pow(M,cls_sz); //no. of syndromes for each cluster
 	num_cls=m/cls_sz; //number of clusters
@@ -207,11 +206,11 @@ int main() {
 	ncx2_vec= new float[74600];
 	val_vec= new float[100];
 	
-	if(!AB && fn!=8 && fn!=10) {
+	if(!AB && !mac && !bch) {
 		inf1.open("param_vec_36nonAB.txt"); for(i=0;i<74600;i++) inf1 >> param_vec[i]; //param is generated using main_RL and ncx2_vec is generated using non_cntrl_chi.m 
 		inf3.open("ncx2_vec_36nonAB.txt"); for(i=0;i<74600;i++) inf3 >> ncx2_vec[i];
 	}
-	else if(!AB && (fn==7 || fn==8 || fn==9)) {
+	else if(mac) {
 		inf1.open("param_vec_MKay.txt"); for(i=0;i<74600;i++) inf1 >> param_vec[i]; //param is generated using main_RL and ncx2_vec is generated using non_cntrl_chi.m 
 		inf3.open("ncx2_vec_MKay.txt"); for(i=0;i<74600;i++) inf3 >> ncx2_vec[i];
 	}
@@ -219,7 +218,11 @@ int main() {
 		inf1.open("param_vec_37AB.txt"); for(i=0;i<74600;i++) inf1 >> param_vec[i];
 		inf3.open("ncx2_vec_37AB.txt"); for(i=0;i<74600;i++) inf3 >> ncx2_vec[i];
 	}
-
+	else if(bch) {
+		inf1.open("param_vec_BCH.txt"); for(i=0;i<74600;i++) inf1 >> param_vec[i];
+		inf3.open("ncx2_vec_BCH.txt"); for(i=0;i<74600;i++) inf3 >> ncx2_vec[i];
+	}
+	
 	for(j=0;j<m;j++) for(i=0;i<n;i++) inf >> H[j*n+i];
 	
 	//load Q-table
@@ -250,7 +253,7 @@ int main() {
 		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf4 >> cls_ind_mat_opt[i][j]; //optimized clustering
 	}
 
-	else if(!AB && !mac){
+	else if(!AB && !mac && !bch){
 		inf13.open("clusters/cls_ind_mat_contg.txt"); 
 		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf13 >> cls_ind_mat_contg[i][j]; //for (3,6) LDPC
 		
@@ -277,12 +280,13 @@ int main() {
 		inf10.open("clusters/cls_ind_mat_ran_BCH_63_51.txt");
 		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf10 >> cls_ind_mat_ran[i][j]; 
 
-		if(matnum==1) inf4.open("clusters/cls_ind_mat_opt_BCH_63_51.txt");
+		inf4.open("clusters/cls_ind_mat_opt_BCH_63_51.txt");
 		for(i=0;i<num_cls;i++) for(j=0;j<cls_sz;j++) inf4 >> cls_ind_mat_opt[i][j];
 	}
 	
-	//cout<<'\n'<<"cls_ind_mat_ran: "<<'\n'; for(i=0;i<num_cls;i++) {for(j=0;j<cls_sz;j++) cout<<cls_ind_mat_ran[i][j]<<" "; cout<<'\n';}
-
+	cout<<'\n'<<"cls_ind_mat_ran: "<<'\n'; for(i=0;i<num_cls;i++) {for(j=0;j<cls_sz;j++) cout<<cls_ind_mat_ran[i][j]<<" "; cout<<'\n';}
+	//cout<<'\n'<<"cls_ind_mat_opt: "<<'\n'; for(i=0;i<num_cls;i++) {for(j=0;j<cls_sz;j++) cout<<cls_ind_mat_opt[i][j]<<" "; cout<<'\n';}
+	
 	/*for(i=0;i<S*num_cls;i++) for(j=0;j<cls_sz;j++) inf9 >> Q_cnt[i*cls_sz+j];
 	for(i=0;i<S*num_cls;i++) 
 		for(j=0;j<cls_sz;j++)
@@ -356,16 +360,16 @@ int main() {
 
 	//Eb/No values in dB (make sure SNR values match with main_RL
 	//float EbNo_BC[]={0,0.6,1.2,1.4,1.8,2,2.2};
-	//float EbNo_BC[]={0.5,1,2,2.5,3,3.5}; //for BCH
+	//float EbNo_BC[]={0.5,0.75,1,1.25,1.5,1.75}; //for BCH
 	float EbNo_BC[]={0.5,1,1.5,2,2.25,2.5}; //for (3,7) AB, (3,6), MKay, 
-
+	
 	num_dat=sizeof(EbNo_BC)/sizeof(EbNo_BC[0]);
 
-	Oc=new long*[num_dat]; for(i=0;i<num_dat;i++) Oc[i]=new long[I];
+	//Oc=new long*[num_dat]; for(i=0;i<num_dat;i++) Oc[i]=new long[I];
 	//inf6.open("Oc.txt"); 
 	//inf6.open("Oc_samp_5000.txt"); //for sample based residual
-	inf6.open("Oc_samp.txt"); 
-	for(i=0;i<num_dat;i++) for(j=0;j<I;j++) inf6 >> Oc[i][j];
+	//inf6.open("Oc_samp.txt"); 
+	//for(i=0;i<num_dat;i++) for(j=0;j<I;j++) inf6 >> Oc[i][j];
 
 	blk_err= new float[num_dat]; 
 	blk_err2= new float[num_dat];
@@ -456,7 +460,7 @@ int main() {
 		ncv=ncv2=ncv3=ncv4=ncv5=ncv6=ncv7=ncv8=0;
 		dcw=dcw2=dcw3=dcw4=dcw5=dcw6=dcw7=dcw8=0;
 		err=err2=err3=err4=err5=err6=err7=err8=biterr=biterr2=biterr3=biterr4=biterr5=biterr6=biterr7=biterr8=l1=l2=l3=0;
-		while(/*(err<ev && i2<num_dat) || err2<ev ||*/ err3<ev || err4<ev || err5<ev || err6<ev || err7<ev /*|| err8<ev*/) { //take avg. of min. 3 blk. error events
+		while(/*(err<ev && i2<num_dat) || err2<ev ||*/ err3<ev || err4<ev || err5<ev /*|| err6<ev || err7<ev || err8<ev*/) { //take avg. of min. 3 blk. error events
 			for(cw=0;cw<CW;cw++) 
 				for(i=0;i<n2;i++) y[cw*n2+i]=1+dist(e2); //adding gaussian noise to all-zero CW
 			
@@ -467,7 +471,7 @@ int main() {
 
 			for(meth=1;meth<=8;meth++) {
 				if(/*(meth==1 && err<ev && i2<num_dat) || (meth==2 && err2<ev) ||*/ (meth==3 && err3<ev) || (meth==4 && err4<ev)
-					|| (meth==5 && err5<ev) || (meth==6 && err6<ev) || (meth==7 && err7<ev) /*|| (meth==8 && err8<ev)*/) {	
+					|| (meth==5 && err5<ev) /*|| (meth==6 && err6<ev) || (meth==7 && err7<ev) || (meth==8 && err8<ev)*/) {	
 
 					num=BP(i2); 
 

@@ -113,7 +113,7 @@ int main() {
 	if(fn==7|| fn==8) {
 		if(matnum==1) inf.open("matrices/mat_BCH_63_51.txt"); 
 		m=12; n=63;
-		cls_sz=6; M=4;
+		cls_sz=6; M=8;
 		col_wt=8; //max. col. wt.
 		row_wt=28; //max. row. wt.
 		dv=col_wt; dc=row_wt;
