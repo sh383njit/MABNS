@@ -7,4 +7,6 @@ Please make sure the methods in lines 51-58 of BP.cpp are using the correct "met
 
 For quantization, use Llyod Max quantizer such as this one: https://www.mathworks.com/matlabcentral/fileexchange/38053-lloyd-max-quantizer-plots-mse
 
+For GI scheduling, compute the GIs according to scheme discussed in the NIPS paper, and load them into the program for each code.
+
 All the matrices, corresponding clusters and Q-tables used for generating the results in the NIPS papper are included in separate folders.
