@@ -1,0 +1,10 @@
+
+For training, compile and run the main function in main_RL.cpp
+
+For inference, compile and run the main function in main_BP.cpp
+
+Please make sure the methods in lines 51-58 of BP.cpp are using the correct "meth" values. All these methods can be simulated serially by launching a single instance of the main program.
+
+For quantization, use Llyod Max quantizer such as this one: https://www.mathworks.com/matlabcentral/fileexchange/38053-lloyd-max-quantizer-plots-mse
+
+All the matrices, corresponding clusters and Q-tables used for generating the results in the NIPS papper are included in separate folders.

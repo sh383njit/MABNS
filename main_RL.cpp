@@ -1,12 +1,5 @@
 
 //does RL
-//for Matlab stuff, first do: $ nano /home/salman/.bashrc
-//then paste: $ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/salman/extern/bin/glnxa64/:matlabroot/sys/os/glnxa64
-//to compile: $ g++ -o main -std=c++11 -I /home/salman/extern/include/ -L /home/salman/extern/bin/glnxa64/ -pthread main_RL.cpp -lMatlabDataArray -lMatlabEngine
-//the matlabroot is /home/salman
-
-//for python stuff (first check python version):
-//g++ -o main main_RL.cpp -I/usr/include/python3.8 -L/usr/lib/python3.8/config-3.8-x86_64-linux-gnu -lpython3.8 
 
 #include <iostream>
 #include <cstdio>
