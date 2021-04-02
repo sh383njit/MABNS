@@ -18,26 +18,26 @@ void MP0(int cnt) {
 			for(j=0;j<m;j++) { //m is no. of CNs
 				for(i=0;i<row_wt;i++) { //row_wt is the no. of neighboring VNs of CN j
 	
-					vidx=vns[j*row_wt+i]; //index of ith neighboring VN of CN j
+					vidx=vns[j*row_wt+i]; 
 	
 					if(vidx>-1) {
 						tmp=1; 
 						for(k=0;k<row_wt;k++) 
-							if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); //jth CN accumulating msgs from all neighboring VNs except i
+							if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); 
 						
 						//cout<<'\n'<<"j: "<<j<<" vidx: "<<vidx<<" tmp: "<<tmp<<endl;
 			
 						for(k=0;k<col_wt;k++) 
-							if(cns[vidx*col_wt+k]==j) {E_c_v[CW*(vidx*col_wt+k)+cw]=2*atanhf(tmp); break;} //msg sent by jth CN to ith VN				
+							if(cns[vidx*col_wt+k]==j) {E_c_v[CW*(vidx*col_wt+k)+cw]=2*atanhf(tmp); break;} 				
 					}
 				} 
 			}
 
 			//vertical step
 			for(i=0;i<n;i++) { //n is no. of VNs
-				for(j=0;j<col_wt;j++) { //col_wt is the no. of neighboring CNs of VN i
+				for(j=0;j<col_wt;j++) { 
 	
-					cidx=cns[i*col_wt+j];  //index of jth neighboring CN of VN i
+					cidx=cns[i*col_wt+j]; 
 	
 					if(cidx>-1) {
 						tmp=0; 
@@ -50,10 +50,10 @@ void MP0(int cnt) {
 								else if(meth==4) ncv4++;
 								else if(meth==5) ncv5++;
 								else if(meth==6) ncv6++;
-							}//ith VN accumulating msg from all neighboring CNs except j 
+							}
 		
 						for(k=0;k<row_wt;k++) 
-							if(vns[cidx*row_wt+k]==i) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+i]; break;} //msg sent by ith VN to jth CN
+							if(vns[cidx*row_wt+k]==i) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+i]; break;} 
 							//printf("tmp2=%f\n",tmp2);					
 					}
 				} 

@@ -16,27 +16,27 @@ void MP1b(int cnt, int l) {
 			j=rand()%m; //index of randomly scheduled CN
 			//cout<<'\n'<<"sh. CN: "<<j<<endl;
 
-			for(i=0;i<row_wt;i++) { //row_wt is the no. of neighboring VNs of CN j
+			for(i=0;i<row_wt;i++) { 
 
-				vidx=vns[j*row_wt+i]; //index of ith neighboring VN of CN j
+				vidx=vns[j*row_wt+i]; 
 
 				//cout<<'\n'<<"vidx: "<<vidx<<endl;
 
 				if(vidx>-1) {
 					tmp=1; 
 					for(k=0;k<row_wt;k++) 
-						if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); //jth CN accumulating msgs from all neighboring VNs except vidx
+						if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]);
 					
 					//cout<<'\n'<<"j: "<<j<<" vidx: "<<vidx<<" tmp: "<<tmp<<endl;
 		
 					for(k=0;k<col_wt;k++) 
-						if(cns[vidx*col_wt+k]==j) {E_c_v[CW*(col_wt*vidx+k)+cw]=2*atanhf(tmp); break;} //msg sent by jth CN to VN vidx	
+						if(cns[vidx*col_wt+k]==j) {E_c_v[CW*(col_wt*vidx+k)+cw]=2*atanhf(tmp); break;} 	
 												
 
 					///////////////////////////////////////////
-					for(j2=0;j2<col_wt;j2++) { //col_wt is the no. of neighboring CNs of VN vidx
+					for(j2=0;j2<col_wt;j2++) { 
 	
-						cidx=cns[vidx*col_wt+j2]; //index of j2 th neighboring CN of VN vidx
+						cidx=cns[vidx*col_wt+j2]; 
 		
 						if(cidx>-1 && cidx!=j) {
 
@@ -45,7 +45,7 @@ void MP1b(int cnt, int l) {
 							tmp=0; 
 							for(k=0;k<col_wt;k++) 
 								if(cns[vidx*col_wt+k]>-1 && cns[vidx*col_wt+k]!=cidx) {
-									tmp+=E_c_v[CW*(col_wt*vidx+k)+cw]; //VN vidx accumulating msg from all neighboring CNs except cidx 
+									tmp+=E_c_v[CW*(col_wt*vidx+k)+cw];  
 									if(meth==1) ncv++;
 									else if(meth==2) ncv2++;
 									else if(meth==3) ncv3++;
@@ -54,7 +54,7 @@ void MP1b(int cnt, int l) {
 									else if(meth==6) ncv6++;
 								}			
 							for(k=0;k<row_wt;k++) 
-								if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} //msg sent by VN vidx to CN cidx
+								if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} 
 								//printf("tmp2=%f\n",tmp2);					
 						}
 					} 

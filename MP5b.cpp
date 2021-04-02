@@ -58,16 +58,16 @@ void MP5b(int cnt) {
 			//cout<<'\n'<<endl;
 			//cout<<'\n'<<"sh. CN res: "<<j;
 	
-			for(i=0;i<row_wt;i++) { //row_wt is the no. of neighboring VNs of CN j
+			for(i=0;i<row_wt;i++) { 
 	
-				vidx=vns[j*row_wt+i]; //index of ith neighboring VN of CN j
+				vidx=vns[j*row_wt+i];
 	
 				//cout<<'\n'<<"vidx: "<<vidx<<endl;
 				if(vidx>-1) {
 					//tmp=1; 
 					for(k=0;k<row_wt;k++) 
 						if(vns[j*row_wt+k]>-1 && k==i) {
-							tmp=E_v_c_mu[CW*(row_wt*j+k)+cw]; //jth CN accumulating mean from VN vidx
+							tmp=E_v_c_mu[CW*(row_wt*j+k)+cw]; 
 							//cout<<'\n'<<"tmp: "<<tmp; 
 							break;
 						} 
@@ -80,24 +80,24 @@ void MP5b(int cnt) {
 							tmp3=(log(tmp4)-0.0218)/(-1*0.4527);
 							mu_c_v=pow(tmp3,1/0.86); 
 							std::normal_distribution<float> dist(mu_c_v,sqrt(2*mu_c_v));
-							E_c_v[CW*(col_wt*vidx+k)+cw]=dist(e2); //sampling mean for jth CN to VN vidx
+							E_c_v[CW*(col_wt*vidx+k)+cw]=dist(e2); 
 							E_c_v_mu[CW*(col_wt*vidx+k)+cw]=mu_c_v;
 							//cout<<'\n'<<"mu_c_v: "<<mu_c_v;
 							break;
 						}	
 
 					//cout<<'\n'<<"E_c_v_mu: "<<'\n'; for(j2=0;j2<n;j2++){for(k=0;k<col_wt;k++) cout<<E_c_v_mu[CW*(col_wt*j2+k)+cw]<<" "; cout<<'\n';}
-					for(i2=0;i2<row_wt;i2++) res_c_v[CW*(row_wt*j+i2)+cw]=0; //erasing residuals of scheduled CN
+					for(i2=0;i2<row_wt;i2++) res_c_v[CW*(row_wt*j+i2)+cw]=0; 
 
 					///////////////////////////////////////////
-					for(j2=0;j2<col_wt;j2++) { //col_wt is the no. of neighboring CNs of VN vidx
-						cidx=cns[vidx*col_wt+j2]; //index of j2 th neighboring CN of VN vidx
+					for(j2=0;j2<col_wt;j2++) { 
+						cidx=cns[vidx*col_wt+j2]; 
 			
 						if(cidx>-1 && cidx!=j) {
 							//cout<<'\n'<<"cidx: "<<cidx;
 							//tmp=0; 
 							for(k=0;k<col_wt;k++) 
-								if(cns[vidx*col_wt+k]>-1 && cns[vidx*col_wt+k]==cidx) {tmp=E_c_v_mu[CW*(col_wt*vidx+k)+cw]; break;} //msg from CN cidx to VN vidx 
+								if(cns[vidx*col_wt+k]>-1 && cns[vidx*col_wt+k]==cidx) {tmp=E_c_v_mu[CW*(col_wt*vidx+k)+cw]; break;} 
 			
 							for(k=0;k<row_wt;k++) 
 								if(vns[cidx*row_wt+k]==vidx) {
@@ -114,16 +114,16 @@ void MP5b(int cnt) {
 
 							//residual update
 							///////////////////////////////////////////////
-							for(i2=0;i2<row_wt;i2++) { //row_wt is the no. of neighboring VNs of CN cidx
+							for(i2=0;i2<row_wt;i2++) { 
 	
-								vidx2=vns[cidx*row_wt+i2]; //index of i2 th neighboring VN of CN cidx
+								vidx2=vns[cidx*row_wt+i2];
 								//cout<<'\n'<<"vidx2: "<<vidx2;
 	
 								if(vidx2>-1) {
 									//tmp=1; 
 									for(k=0;k<row_wt;k++) 
 										if(vns[cidx*row_wt+k]>-1 && vns[cidx*row_wt+k]==vidx2) {
-											tmp=E_v_c_mu[CW*(row_wt*cidx+k)+cw]; //CN cidx accumulating msg from VN vidx2
+											tmp=E_v_c_mu[CW*(row_wt*cidx+k)+cw];
 											break;
 										}
 						
@@ -141,7 +141,7 @@ void MP5b(int cnt) {
 											//cout<<'\n'<<"mu_c_v: "<<mu_c_v;
 											std::normal_distribution<float> dist(mu_c_v,sqrt(2*mu_c_v));
 											val=dist(e2); //msg sent by CN cidx to VN vidx2
-											//res_c_v[CW*(row_wt*cidx+i2)+cw]=abs(val-E_c_v[CW*(vidx2*col_wt+k)+cw]); //residual update of msg. CN cidx to VN vidx2	
+											//res_c_v[CW*(row_wt*cidx+i2)+cw]=abs(val-E_c_v[CW*(vidx2*col_wt+k)+cw]); 	
 
 											//mean=mu_c_v-E_c_v_mu[CW*(vidx2*col_wt+k)+cw]; //residual mean= the difference between means of new and current message 
 

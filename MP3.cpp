@@ -155,18 +155,18 @@ void MP3(long cnt, long l) {
 				if(vidx>-1) {
 					tmp=1; 
 					for(k=0;k<row_wt;k++) 
-						if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); //jth CN accumulating msgs from all neighboring VNs except vidx
+						if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); 
 						//cout<<'\n'<<"j: "<<j<<" vidx: "<<vidx<<" tmp: "<<tmp<<endl;
 			
 					for(k=0;k<col_wt;k++) 
 						if(cns[vidx*col_wt+k]==j) {
-							E_c_v[CW*(vidx*col_wt+k)+cw]=2*atanhf(tmp); //msg sent by jth CN to VN vidx
+							E_c_v[CW*(vidx*col_wt+k)+cw]=2*atanhf(tmp); 
 							break;
 						}	
 															
 					///////////////////////////////////////////
-					for(j2=0;j2<col_wt;j2++) { //col_wt is the no. of neighboring CNs of VN vidx
-						cidx=cns[vidx*col_wt+j2]; //index of j2 th neighboring CN of VN vidx
+					for(j2=0;j2<col_wt;j2++) { 
+						cidx=cns[vidx*col_wt+j2]; 
 			
 						if(cidx>-1 && cidx!=j) {
 							//if(meth==7) {cout<<'\n'<<"cidx: "<<cidx<<endl;}
@@ -183,7 +183,7 @@ void MP3(long cnt, long l) {
 							//if(meth==7) {cout<<'\n'<<"ncv7: "<<ncv7<<" dcw7: "<<dcw7<<endl;}	
 										
 							for(k=0;k<row_wt;k++) 
-								if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} //msg sent by VN vidx to CN cidx
+								if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} 
 									//printf("tmp2=%f\n",tmp2);	
 						}
 					} 

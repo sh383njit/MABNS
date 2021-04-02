@@ -64,7 +64,6 @@ int main() {
 	//m=500; n=1000; inf.open("mat_nonAB.txt"); dv=3; dc=6; 
 	//m=420; n=980; AB=1; inf.open("mat_AB.txt"); dv=3; dc=7; 
 
-	//****************************** the b (resp. c) version was trained with 5*10^7 (resp. 1.25*10^6) training examples
 
 	//********************************************************** non-AB *****************************************************************
 	

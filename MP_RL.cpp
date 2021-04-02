@@ -10,15 +10,15 @@ void MP_RL(long j, long cw) {
 	//j is index of scheduled CN
 	//cout<<'\n'<<"sh. CN: "<<j;
 	
-	for(i=0;i<row_wt;i++) { //row_wt is the no. of neighboring VNs of CN j
+	for(i=0;i<row_wt;i++) { 
 	
-		vidx=vns[j*row_wt+i]; //index of ith neighboring VN of CN j
+		vidx=vns[j*row_wt+i]; 
 		//cout<<'\n'<<"vidx: "<<vidx<<endl;
 
 		if(vidx>-1) {
 			tmp=1; 
 			for(k=0;k<row_wt;k++) {
-				if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); //jth CN accumulating msgs from all neighboring VNs except vidx
+				if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); 
 				//cout<<'\n'<<"j: "<<j<<" vidx: "<<vidx<<" tmp: "<<tmp<<endl;
 				//cout<<'\n'<<"E_v_c1: "<<E_v_c[CW*(row_wt*j+k)+cw];
 			}
@@ -29,7 +29,7 @@ void MP_RL(long j, long cw) {
 					else if(tmp>0.999) tmp=0.999;
 					val=2*atanhf(tmp); //new msg. 
 					//cout<<'\n'<<"val: "<<val;
-					res_c_v[CW*(row_wt*j+i)+cw]=abs(val-E_c_v[CW*(vidx*col_wt+k)+cw]); //residual update of msg. CN cidx to VN vidx2
+					res_c_v[CW*(row_wt*j+i)+cw]=abs(val-E_c_v[CW*(vidx*col_wt+k)+cw]); 
 					//cout<<'\n'<<"res_c_v: "<<res_c_v[CW*(row_wt*j+i)+cw];
 					E_c_v[CW*(vidx*col_wt+k)+cw]=val; //msg sent by jth CN to VN vidx
 					break;											
@@ -37,18 +37,18 @@ void MP_RL(long j, long cw) {
 									
 	
 			///////////////////////////////////////////
-			for(j2=0;j2<col_wt;j2++) { //col_wt is the no. of neighboring CNs of VN vidx
+			for(j2=0;j2<col_wt;j2++) { 
 		
-				cidx=cns[vidx*col_wt+j2]; //index of j2 th neighboring CN of VN vidx
+				cidx=cns[vidx*col_wt+j2]; 
 			
 				if(cidx>-1 && cidx!=j) {
 	
 					//cout<<'\n'<<"cidx: "<<cidx<<endl;
 					tmp=0; 
 					for(k=0;k<col_wt;k++) 
-						if(cns[vidx*col_wt+k]>-1 && cns[vidx*col_wt+k]!=cidx) tmp+=E_c_v[CW*(col_wt*vidx+k)+cw]; //VN vidx accumulating msg from all neighboring CNs except cidx 			
+						if(cns[vidx*col_wt+k]>-1 && cns[vidx*col_wt+k]!=cidx) tmp+=E_c_v[CW*(col_wt*vidx+k)+cw]; 			
 					for(k=0;k<row_wt;k++) {
-						if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} //msg sent by VN vidx to CN cidx
+						if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} 
 							//printf("tmp2=%f\n",tmp2);
 							//cout<<'\n'<<"E_v_c2: "<<E_v_c[CW*(row_wt*cidx+k)+cw];	
 					}

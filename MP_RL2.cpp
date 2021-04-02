@@ -42,23 +42,23 @@ void MP_RL(long j, long cw) {
 	//cout<<'\n'<<'\n'<<"res_srtd: "; for(i=0;i<m;i++) cout<<res_c_v_srtd[CW*(row_wt*i+0)+cw]<<" "; 
 	//cout<<'\n'<<"cn_indx: "; for(i=0;i<m;i++) cout<<cn_indx[i]<<" "; 
 
-	for(i=0;i<row_wt;i++) { //row_wt is the no. of neighboring VNs of CN j
+	for(i=0;i<row_wt;i++) { 
 	
-		vidx=vns[j*row_wt+i]; //index of ith neighboring VN of CN j
+		vidx=vns[j*row_wt+i]; 
 	
 		//cout<<'\n'<<"vidx: "<<vidx<<endl;
 
 		if(vidx>-1) {
 			tmp=1; 
 			for(k=0;k<row_wt;k++) 
-				if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); //jth CN accumulating msgs from all neighboring VNs except vidx
+				if(vns[j*row_wt+k]>-1 && k!=i) tmp*=tanh(0.5*E_v_c[CW*(row_wt*j+k)+cw]); 
 										//cout<<'\n'<<"j: "<<j<<" vidx: "<<vidx<<" tmp: "<<tmp<<endl;
 			
 			for(k=0;k<col_wt;k++) 
 				if(cns[vidx*col_wt+k]==j) {
 					if(tmp<-0.999) tmp=-0.999;
 					else if(tmp>0.999) tmp=0.999;
-					E_c_v[CW*(col_wt*vidx+k)+cw]=2*atanhf(tmp); //msg sent by jth CN to VN vidx
+					E_c_v[CW*(col_wt*vidx+k)+cw]=2*atanhf(tmp); 
 					break;
 				}	
 
@@ -67,9 +67,9 @@ void MP_RL(long j, long cw) {
 			for(i2=0;i2<row_wt;i2++) res_c_v[CW*(row_wt*j+i2)+cw]=0; //erasing residuals of updated CN
 
 			///////////////////////////////////////////
-			for(j2=0;j2<col_wt;j2++) { //col_wt is the no. of neighboring CNs of VN vidx
+			for(j2=0;j2<col_wt;j2++) { 
 		
-				cidx=cns[vidx*col_wt+j2]; //index of j2 th neighboring CN of VN vidx
+				cidx=cns[vidx*col_wt+j2]; 
 			
 				if(cidx>-1 && cidx!=j) {
 	
@@ -77,9 +77,9 @@ void MP_RL(long j, long cw) {
 	
 					tmp=0; 
 					for(k=0;k<col_wt;k++) 
-						if(cns[vidx*col_wt+k]>-1 && cns[vidx*col_wt+k]!=cidx) tmp+=E_c_v[CW*(col_wt*vidx+k)+cw]; //VN vidx accumulating msg from all neighboring CNs except cidx 			
+						if(cns[vidx*col_wt+k]>-1 && cns[vidx*col_wt+k]!=cidx) tmp+=E_c_v[CW*(col_wt*vidx+k)+cw]; 			
 					for(k=0;k<row_wt;k++) 
-						if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} //msg sent by VN vidx to CN cidx
+						if(vns[cidx*row_wt+k]==vidx) {E_v_c[CW*(row_wt*cidx+k)+cw]=tmp+LR[cw*n+vidx]; break;} 
 							//printf("tmp2=%f\n",tmp2);	
 
 					//cout<<'\n'<<"E_v_c: "<<'\n'; for(j3=0;j3<m;j3++){for(k=0;k<row_wt;k++) cout<<E_v_c[CW*(row_wt*j3+k)+cw]<<" "; cout<<'\n';}
@@ -88,9 +88,9 @@ void MP_RL(long j, long cw) {
 
 					//residual update
 					///////////////////////////////////////////////
-					for(i2=0;i2<row_wt;i2++) { //row_wt is the no. of neighboring VNs of CN cidx
+					for(i2=0;i2<row_wt;i2++) { 
 	
-						vidx2=vns[cidx*row_wt+i2]; //index of i2 th neighboring VN of CN cidx
+						vidx2=vns[cidx*row_wt+i2]; 
 	
 						//cout<<'\n'<<"vidx2: "<<vidx2;
 	
@@ -98,7 +98,7 @@ void MP_RL(long j, long cw) {
 							tmp=1; 
 							for(k=0;k<row_wt;k++) 
 								if(vns[cidx*row_wt+k]>-1 && vns[cidx*row_wt+k]!=vidx2) 
-									tmp*=tanh(0.5*E_v_c[CW*(row_wt*cidx+k)+cw]); //CN cidx accumulating msgs from all neighboring VNs except vidx2
+									tmp*=tanh(0.5*E_v_c[CW*(row_wt*cidx+k)+cw]); 
 						
 							//cout<<'\n'<<"tmp: "<<tmp;
 			
@@ -106,7 +106,7 @@ void MP_RL(long j, long cw) {
 								if(cns[vidx2*col_wt+k]==cidx) {
 									val=2*atanhf(tmp); //new msg. CN cidx to VN vidx2
 									//cout<<'\n'<<"val: "<<val;
-									res_c_v[CW*(row_wt*cidx+i2)+cw]=abs(val-E_c_v[CW*(vidx2*col_wt+k)+cw]); //residual update of msg. CN cidx to VN vidx2		
+									res_c_v[CW*(row_wt*cidx+i2)+cw]=abs(val-E_c_v[CW*(vidx2*col_wt+k)+cw]); 		
 									break;
 								}
 							//cout<<'\n'<<"res_c_v:"; cout<<res_c_v[CW*(row_wt*cidx+i2)+cw];
